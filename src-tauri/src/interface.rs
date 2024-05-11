@@ -4,6 +4,22 @@ use log::error;
 
 const DATABASE_PATH: &str = "database/customization.db";
 
+
+pub fn open_dir() {
+  #[cfg(target_os = "windows")]{
+    std::process::Command::new("explorer")
+            .arg("characters")
+            .spawn()
+            .expect("Failed to open folder in explorer");
+  }
+  #[cfg(target_os = "linux")] {
+    std::process::Command::new("xdg-open")
+            .arg("characters")
+            .spawn()
+            .expect("Failed to open folder in file manager");
+  }
+}
+
 pub mod database_interface {
   use super::*;
   #[tauri::command]
@@ -136,6 +152,7 @@ pub mod customization_interface {
         error!("Error ocurred while reading/writting to Character file named {}{}, due to {:#?}", username, surname, &e);
       },
     };
+    open_dir();
   }
 
   #[tauri::command]
